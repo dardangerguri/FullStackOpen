@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+
+import phonebookService from './services/phonebook'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -12,10 +13,10 @@ const App = () => {
   const [filterText, setFilterText] = useState('')
 
   const hook = () => {
-    axios
-    .get('http://localhost:3001/persons')
-    .then(response => {
-      setPersons(response.data)
+    phonebookService
+    .getAll()
+    .then(phonebookList => {
+      setPersons(phonebookList)
     })
   }
 
@@ -38,10 +39,10 @@ const App = () => {
       number: newNumber
     }
 
-    axios
-      .post('http://localhost:3001/persons', personObject)
-      .then(response => {
-        setPersons(persons.concat(personObject))
+    phonebookService
+      .create(personObject)
+      .then(newContact => {
+        setPersons(persons.concat(newContact))
       })
     setNewName('')
     setNewNumber('')
