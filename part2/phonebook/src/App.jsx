@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Message from './components/Message'
 
 import phonebookService from './services/phonebook'
 
@@ -11,6 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterText, setFilterText] = useState('')
+  const [message, setMessage] = useState(null)
 
   const hook = () => {
     phonebookService
@@ -43,6 +45,8 @@ const App = () => {
           .update(personExists.id, personObject)
           .then(updatedPerson => {
             setPersons(persons.map(person => person.id !== updatedPerson.id ? person : updatedPerson))
+            setMessage(`Changed ${newName}'s number`)
+            setTimeout(() => setMessage(null), 5000)
           })
        return
     }
@@ -51,6 +55,8 @@ const App = () => {
       .create(personObject)
       .then(newContact => {
         setPersons(persons.concat(newContact))
+        setMessage(`Added ${newName}`)
+        setTimeout(() => setMessage(null), 5000)
       })
     setNewName('')
     setNewNumber('')
@@ -88,6 +94,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+        <Message message={message}/>
         <Filter filterText={filterText} handleFilterTextChange={handleFilterTextChange} />
       <h2>add a new</h2>
       <PersonForm
