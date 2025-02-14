@@ -12,7 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterText, setFilterText] = useState('')
-  const [message, setMessage] = useState(null)
+  const [notification, setNotification] = useState({message: null, isError: false})
 
   const hook = () => {
     phonebookService
@@ -37,29 +37,51 @@ const App = () => {
       number: newNumber
     }
 
-    const personExists = persons.find(person => person.name === newName)
-
-    if (personExists) {
-      if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`))
-        phonebookService
-          .update(personExists.id, personObject)
-          .then(updatedPerson => {
-            setPersons(persons.map(person => person.id !== updatedPerson.id ? person : updatedPerson))
-            setMessage(`Changed ${newName}'s number`)
-            setTimeout(() => setMessage(null), 5000)
-          })
-       return
-    }
-
     phonebookService
-      .create(personObject)
-      .then(newContact => {
-        setPersons(persons.concat(newContact))
-        setMessage(`Added ${newName}`)
-        setTimeout(() => setMessage(null), 5000)
-      })
-    setNewName('')
-    setNewNumber('')
+    .getAll()
+    .then((phonebookList => {
+      const personExists = phonebookList.find(person => person.name === newName)
+      if (personExists) {
+        if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
+          phonebookService
+            .update(personExists.id, personObject)
+            .then(updatedPerson => {
+              phonebookService.getAll().then(updatedPhonebookList => {
+                setPersons(updatedPhonebookList)
+                setNotification({
+                  message: `Changed ${newName}'s number`,
+                  isError: false
+                })
+                setTimeout(() => setNotification({message: null, isError: false}), 5000)
+              })
+            })
+            .catch(error => {
+              setNotification({
+                message: `Information of ${newName} has already been removed from the server`,
+                isError: true
+              })
+              setTimeout(() => setNotification({message: null, isError: false}), 5000)
+              setPersons(persons.filter(n => n.id !== personExists.id))
+            })
+        }
+        return
+      }
+      else {
+        phonebookService
+            .create(personObject)
+            .then(newContact => {
+              setPersons(persons.concat(newContact))
+              setNotification({
+                message: `Added ${newName}`,
+                isError: false
+              })
+              setTimeout(() => setNotification({message: null, isError: false}), 5000)
+            })
+        setNewName('')
+        setNewNumber('')
+      }
+    }))
+
   }
 
   const handleNameChange = (event) => {
@@ -84,6 +106,14 @@ const App = () => {
         .then(() => {
           setPersons(persons.filter(n => n.id !== id))
         })
+        .catch(error => {
+          setNotification({
+            message: `Information of ${name} has already been removed from the server`,
+            isError: true
+          })
+          setTimeout(() => setNotification({message: null, isError: false}), 5000)
+          setPersons(persons.filter(n => n.id !== id))
+        })
     }
   }
 
@@ -94,7 +124,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-        <Message message={message}/>
+        <Message message={notification.message} isError={notification.isError}/>
         <Filter filterText={filterText} handleFilterTextChange={handleFilterTextChange} />
       <h2>add a new</h2>
       <PersonForm

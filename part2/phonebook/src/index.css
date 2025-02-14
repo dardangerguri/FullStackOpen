@@ -1,5 +1,5 @@
 .messageStyle {
-  color: green;
+  color: var(--message-color);
   background: lightgrey;
   font-size: 20px;
   border-style: solid;
