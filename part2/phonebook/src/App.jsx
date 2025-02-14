@@ -63,6 +63,16 @@ const App = () => {
     setFilterText(event.target.value)
   }
 
+  const handleDeletePerson = (id, name) => {
+    if (window.confirm(`Delete ${name} ? `)) {
+      phonebookService
+        .remove(id)
+        .then(() => {
+          setPersons(persons.filter(n => n.id !== id))
+        })
+    }
+  }
+
   const filteredPersons = persons.filter((person) =>
     person.name.toLowerCase().includes(filterText.toLowerCase())
   )
@@ -78,7 +88,7 @@ const App = () => {
         newNumber={newNumber} handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-        <Persons persons={filteredPersons} />
+        <Persons persons={filteredPersons} handleDeletePerson={handleDeletePerson} />
     </div>
   )
 }
