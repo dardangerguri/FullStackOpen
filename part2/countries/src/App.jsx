@@ -41,7 +41,7 @@ const App = () => {
       find countries
       <input value={search} onChange={handleSearch} />
       {filtered.length === 1 && <CountryDetails country={filtered[0]} />}
-      {filtered.length !== 1 && <CountryList countries={filtered} />}
+      {filtered.length !== 1 && <CountryList countries={filtered} setSearch={setSearch} />}
     </div>
   )
 }

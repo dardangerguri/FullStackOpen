@@ -1,4 +1,4 @@
-const CountryList = ({countries}) => {
+const CountryList = ({countries, setSearch}) => {
   if (countries.length > 10) {
     return (
       <div>
@@ -10,7 +10,9 @@ const CountryList = ({countries}) => {
   return (
     <div>
       {countries.map((country) => (
-        <span key={country.name.common}>{country.name.common} <br /></span>
+        <span key={country.name.common}>{country.name.common}
+          <button onClick={() => setSearch(country.name.common)}>Show</button> <br />
+        </span>
       ))}
     </div>
   )
