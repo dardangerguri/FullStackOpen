@@ -56,12 +56,21 @@ const App = () => {
               })
             })
             .catch(error => {
-              setNotification({
-                message: `Information of ${newName} has already been removed from the server`,
-                isError: true
-              })
-              setTimeout(() => setNotification({message: null, isError: false}), 5000)
-              setPersons(persons.filter(n => n.id !== personExists.id))
+              if (error.response && error.response.data.error) {
+                setNotification({
+                  message: error.response.data.error,
+                  isError: true
+                })
+                setTimeout(() => setNotification({message: null, isError: false}), 5000)
+              }
+              else {
+                setNotification({
+                  message: `Information of ${newName} has already been removed from the server`,
+                  isError: true
+                })
+                setTimeout(() => setNotification({message: null, isError: false}), 5000)
+                setPersons(persons.filter(n => n.id !== personExists.id))
+              }
             })
         }
         return
