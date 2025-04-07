@@ -30,6 +30,12 @@ test('there are two blogs', async () => {
   assert.strictEqual(response.length, helper.initialBlogs.length)
 })
 
+test('blog identifier is named id', async () => {
+  const response = await helper.blogsInDb()
+
+  assert.strictEqual(response[0].id !== undefined, true)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
