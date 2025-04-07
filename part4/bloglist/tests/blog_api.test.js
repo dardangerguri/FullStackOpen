@@ -79,6 +79,32 @@ test('default likes is 0', async () => {
   assert.strictEqual(addedBlog.likes, 0)
 })
 
+test('status code is 400 if title is missing', async () => {
+  const newBlog = {
+    author: 'Test Author',
+    url: 'http://testblog.com',
+    likes: 5
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
+test ('status code is 400 if url is missing', async () => {
+  const newBlog = {
+    title: 'Test Blog',
+    author: 'Test Author',
+    likes: 5
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
