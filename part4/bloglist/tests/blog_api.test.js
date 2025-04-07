@@ -59,6 +59,26 @@ test('a valid blog can be added', async () => {
   assert(titles.includes('Test Blog'))
 })
 
+test('default likes is 0', async () => {
+  const newBlog = {
+    title: 'Test Blog',
+    author: 'Test Author',
+    url: 'http://testblog.com',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await helper.blogsInDb()
+
+  const addedBlog = response[response.length - 1]
+
+  assert.strictEqual(addedBlog.likes, 0)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
