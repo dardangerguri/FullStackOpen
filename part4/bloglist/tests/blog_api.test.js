@@ -128,6 +128,29 @@ describe('test DELETE /api/blogs/:id', () => {
   })
 })
 
+describe('test PUT /api/blogs/:id', () => {
+  test('a blog is updated', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+
+    const updatedBlog = { ...blogToUpdate, likes: 10 }
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+
+    const updatedBlogFromDb = blogsAtEnd.find(blog => blog.id === blogToUpdate.id)
+
+    assert.strictEqual(updatedBlogFromDb.likes, 10)
+  })
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
