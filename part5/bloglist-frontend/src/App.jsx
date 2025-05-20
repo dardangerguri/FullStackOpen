@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -12,6 +13,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [notification, setNotification] = useState({message: null, isError: false})
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -39,11 +41,19 @@ const App = () => {
       }
       const returnedBlog = await blogService.create(newBlogObject)
       setBlogs(blogs.concat(returnedBlog))
+      setNotification({
+        message: `A new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
+        isError: false })
+      setTimeout(() => setNotification({message: null, isError: false}), 5000)
       setTitle('')
       setAuthor('')
       setUrl('')
     } catch (exception) {
-      console.error('Blog creation failed')
+      setNotification({
+        message: 'Error: ' + exception.response.data.error,
+        isError: true
+      })
+      setTimeout(() => setNotification({message: null, isError: false}), 5000)
     }
   }
 
@@ -96,7 +106,11 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      console.error('Wrong credentials')
+      setNotification({
+        message: exception.response.data.error,
+        isError: true
+      })
+      setTimeout(() => setNotification({message: null, isError: false}), 5000)
     }
   }
 
@@ -115,6 +129,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
+        <Notification message={notification.message} isError={notification.isError} />
           <form onSubmit={handleLogin}>
             <div>
               username
@@ -143,6 +158,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={notification.message} isError={notification.isError} />
       <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
       {blogForm()}
       {blogs.map(blog =>
