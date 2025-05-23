@@ -11,7 +11,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState({message: null, isError: false})
+  const [notification, setNotification] = useState({ message: null, isError: false })
 
   const blogFormRef = useRef()
 
@@ -40,14 +40,14 @@ const App = () => {
         setNotification({
           message: `A new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
           isError: false })
-        setTimeout(() => setNotification({message: null, isError: false}), 5000)
+        setTimeout(() => setNotification({ message: null, isError: false }), 5000)
       })
       .catch(exception => {
         setNotification({
           message: 'Error: ' + exception.response.data.error,
           isError: true
         })
-        setTimeout(() => setNotification({message: null, isError: false}), 5000)
+        setTimeout(() => setNotification({ message: null, isError: false }), 5000)
       })
   }
 
@@ -59,14 +59,14 @@ const App = () => {
         setNotification({
           message: `A blog ${returnedBlog.title} by ${returnedBlog.author} updated`,
           isError: false })
-        setTimeout(() => setNotification({message: null, isError: false}), 5000)
+        setTimeout(() => setNotification({ message: null, isError: false }), 5000)
       })
       .catch(exception => {
         setNotification({
           message: 'Error: ' + exception.response.data.error,
           isError: true
         })
-        setTimeout(() => setNotification({message: null, isError: false}), 5000)
+        setTimeout(() => setNotification({ message: null, isError: false }), 5000)
       })
   }
 
@@ -79,14 +79,14 @@ const App = () => {
           message: 'Blog deleted',
           isError: false
         })
-        setTimeout(() => setNotification({message: null, isError: false}), 5000)
+        setTimeout(() => setNotification({ message: null, isError: false }), 5000)
       })
       .catch(exception => {
         setNotification({
           message: 'Error: ' + exception.response.data.error,
           isError: true
         })
-        setTimeout(() => setNotification({message: null, isError: false}), 5000)
+        setTimeout(() => setNotification({ message: null, isError: false }), 5000)
       })
   }
 
@@ -115,7 +115,7 @@ const App = () => {
         message: exception.response.data.error,
         isError: true
       })
-      setTimeout(() => setNotification({message: null, isError: false}), 5000)
+      setTimeout(() => setNotification({ message: null, isError: false }), 5000)
     }
   }
 
@@ -135,27 +135,27 @@ const App = () => {
       <div>
         <h2>log in to application</h2>
         <Notification message={notification.message} isError={notification.isError} />
-          <form onSubmit={handleLogin}>
-            <div>
-              username
-              <input
-                type="text"
-                value={username}
-                name="Username"
-                onChange={({ target }) => setUsername(target.value)}
-              />
-            </div>
-            <div>
-              password
-              <input
-                type="password"
-                value={password}
-                name="Password"
-                onChange={({ target }) => setPassword(target.value)}
-              />
-            </div>
-            <button type="submit">login</button>
-          </form>
+        <form onSubmit={handleLogin}>
+          <div>
+            username
+            <input
+              type="text"
+              value={username}
+              name="Username"
+              onChange={({ target }) => setUsername(target.value)}
+            />
+          </div>
+          <div>
+            password
+            <input
+              type="password"
+              value={password}
+              name="Password"
+              onChange={({ target }) => setPassword(target.value)}
+            />
+          </div>
+          <button type="submit">login</button>
+        </form>
       </div>
     )
   }
@@ -170,7 +170,8 @@ const App = () => {
         .sort((a, b) => b.likes - a.likes)
         .map(blog =>
           <Blog key={blog.id} blog={blog} updateBlog={updateBlog} user={user} deleteBlog={deleteBlog} />
-      )}
+        )
+      }
     </div>
   )
 }
