@@ -70,6 +70,26 @@ const App = () => {
       })
   }
 
+  const deleteBlog = (id) => {
+    blogService
+      .remove(id)
+      .then(() => {
+        setBlogs(blogs.filter(blog => blog.id !== id))
+        setNotification({
+          message: 'Blog deleted',
+          isError: false
+        })
+        setTimeout(() => setNotification({message: null, isError: false}), 5000)
+      })
+      .catch(exception => {
+        setNotification({
+          message: 'Error: ' + exception.response.data.error,
+          isError: true
+        })
+        setTimeout(() => setNotification({message: null, isError: false}), 5000)
+      })
+  }
+
   const blogForm = () => (
     <Togglable buttonLabel="create new blog" ref={blogFormRef}>
       <BlogForm createBlog={addBlog} />
@@ -149,7 +169,7 @@ const App = () => {
       {blogs
         .sort((a, b) => b.likes - a.likes)
         .map(blog =>
-          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} user={user} deleteBlog={deleteBlog} />
       )}
     </div>
   )
