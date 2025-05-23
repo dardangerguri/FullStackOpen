@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlog }) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -8,6 +8,17 @@ const Blog = ({ blog }) => {
 
   const toggleVisibility = () => {
     setVisible(!visible)
+  }
+
+  const handleLike = () => {
+    const updatedBlog = {
+      user: blog.user.id,
+      likes: blog.likes + 1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url
+    }
+    updateBlog(blog.id, updatedBlog)
   }
 
   const blogStyle = {
@@ -27,7 +38,7 @@ const Blog = ({ blog }) => {
       </div>
       <div style={showWhenVisible} className="togglableContent">
         <a href={blog.url} target="_blank" rel="noopener noreferrer">{blog.url}</a> <br />
-        likes {blog.likes} <button>like</button> <br />
+        likes {blog.likes} <button onClick={handleLike}>like</button> <br />
         {blog.user.name} <br />
       </div>
   </div>

@@ -50,6 +50,25 @@ const App = () => {
       })
   }
 
+  const updateBlog = (id, blogObject) => {
+    blogService
+      .update(id, blogObject)
+      .then(returnedBlog => {
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+        setNotification({
+          message: `A blog ${returnedBlog.title} by ${returnedBlog.author} updated`,
+          isError: false })
+        setTimeout(() => setNotification({message: null, isError: false}), 5000)
+      })
+      .catch(exception => {
+        setNotification({
+          message: 'Error: ' + exception.response.data.error,
+          isError: true
+        })
+        setTimeout(() => setNotification({message: null, isError: false}), 5000)
+      })
+  }
+
   const blogForm = () => (
     <Togglable buttonLabel="create new blog" ref={blogFormRef}>
       <BlogForm createBlog={addBlog} />
@@ -127,7 +146,7 @@ const App = () => {
       <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
       {blogForm()}
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
       )}
     </div>
   )
