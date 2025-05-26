@@ -53,3 +53,33 @@ test('blog renders url and number of likes when the view button is clicked', asy
   expect(togglableContent).toHaveTextContent('https://example.com')
   expect(togglableContent).toHaveTextContent('10')
 })
+
+test('clicking the like button twice calls the event handler twice', async () => {
+  const blog = {
+    title: 'Test Blog',
+    author: 'Test Author',
+    url: 'https://example.com',
+    likes: 10,
+    user: '1'
+  }
+
+  const testUser = {
+    username: 'test',
+    name: 'Test',
+    password: 'password'
+  }
+
+  const mockHandler = vi.fn()
+
+  render(<Blog blog={blog} user={testUser} updateBlog={mockHandler} />)
+
+  const user = userEvent.setup()
+  const viewButton = screen.getByText('view')
+  await user.click(viewButton)
+
+  const likeButton = screen.getByText('like')
+  await user.click(likeButton)
+  await user.click(likeButton)
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
+})
