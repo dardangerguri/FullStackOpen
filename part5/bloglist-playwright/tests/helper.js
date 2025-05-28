@@ -10,6 +10,8 @@ const createBlog = async (page, blog) => {
   await page.getByPlaceholder('author').fill(blog.author)
   await page.getByPlaceholder('url').fill(blog.url)
   await page.getByRole('button', { name: 'create' }).click()
+
+  await page.locator('.notification').filter({ hasText: `A new blog ${blog.title} by ${blog.author} added` }).waitFor()
 }
 
 export { loginWith, createBlog }
