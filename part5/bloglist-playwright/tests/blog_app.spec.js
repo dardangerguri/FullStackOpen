@@ -102,6 +102,28 @@ test.describe('Blog App', () => {
         await expect(successDiv).toHaveCSS('border-style', 'solid')
         await expect(page.getByText(`${blog.title} ${blog.author}`)).not.toBeVisible()
       })
+
+      test('it cannot be removed by another user', async ({ page, request }) => {
+        const anotherUser = {
+          name: 'Second Test User',
+          username: 'secondtest',
+          password: 'password'
+        }
+
+        await request.post('/api/users', {
+          data: anotherUser
+        })
+
+        await page.getByRole('button', { name: 'logout' }).click()
+        await loginWith(page, anotherUser.username, anotherUser.password)
+        await expect(page.getByText(`${anotherUser.name} logged in`)).toBeVisible()
+
+        await expect(page.getByText(`${blog.title} ${blog.author}`)).toBeVisible()
+        await page.getByRole('button', { name: 'view' }).click()
+
+        await expect(page.getByText(`${blog.title} ${blog.author}`)).toBeVisible()
+        await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
+      })
     })
   })
 })
