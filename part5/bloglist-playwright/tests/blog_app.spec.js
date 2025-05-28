@@ -84,6 +84,24 @@ test.describe('Blog App', () => {
         await page.getByRole('button', { name: 'like' }).click()
         await expect(page.getByText('likes 1')).toBeVisible()
       })
+
+      test('it can be removed by the creator', async ({ page }) => {
+        await page.getByRole('button', { name: 'view' }).click()
+        await expect(page.getByText(`${blog.title} by ${blog.author}`)).toBeVisible()
+
+        page.on('dialog', async dialog => {
+          await expect(dialog.message()).toBe(`Remove blog ${blog.title} by ${blog.author}`)
+          await dialog.accept()
+        })
+
+        await page.getByRole('button', { name: 'remove' }).click()
+
+        const successDiv = page.locator('.notification')
+        await expect(successDiv).toContainText(`Blog deleted`)
+        await expect(successDiv).toHaveCSS('color', 'rgb(0, 128, 0)')
+        await expect(successDiv).toHaveCSS('border-style', 'solid')
+        await expect(page.getByText(`${blog.title} ${blog.author}`)).not.toBeVisible()
+      })
     })
   })
 })
