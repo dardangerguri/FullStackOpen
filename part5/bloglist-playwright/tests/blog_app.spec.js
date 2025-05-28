@@ -125,5 +125,47 @@ test.describe('Blog App', () => {
         await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
       })
     })
+
+    test.describe('and multiple blogs exist', () => {
+      test.beforeEach(async ({ page }) => {
+        await createBlog(page, { title: 'Blog1', author: 'Author1', url: 'http://testblog.com' })
+        await createBlog(page, { title: 'Blog2', author: 'Author2', url: 'http://testblog.com' })
+        await createBlog(page, { title: 'Blog3', author: 'Author3', url: 'http://testblog.com' })
+      })
+
+      test('they are ordered by likes', async ({ page }) => {
+        const blogs = page.locator('.blog')
+        await expect(blogs).toHaveCount(3)
+
+        await expect(blogs.nth(0).getByText('Blog1 Author1')).toBeVisible()
+        await expect(blogs.nth(1).getByText('Blog2 Author2')).toBeVisible()
+        await expect(blogs.nth(2).getByText('Blog3 Author3')).toBeVisible()
+
+        await page.getByRole('button', { name: 'view' }).nth(0).click()
+        await page.getByRole('button', { name: 'like' }).click()
+        await expect(page.getByText('likes 1')).toBeVisible()
+        await page.getByRole('button', { name: 'hide' }).nth(0).click()
+
+        await page.getByRole('button', { name: 'view' }).nth(1).click()
+        await page.getByRole('button', { name: 'like' }).click()
+        await page.waitForTimeout(200)
+        await page.getByRole('button', { name: 'like' }).click()
+        await expect(page.getByText('likes 2')).toBeVisible()
+        await page.getByRole('button', { name: 'hide' }).click()
+
+        await page.getByRole('button', { name: 'view' }).nth(2).click()
+        await page.getByRole('button', { name: 'like' }).click()
+        await page.waitForTimeout(200)
+        await page.getByRole('button', { name: 'like' }).click()
+        await page.waitForTimeout(200)
+        await page.getByRole('button', { name: 'like' }).click()
+        await expect(page.getByText('likes 3')).toBeVisible()
+
+        const blogsAfterLikes = page.locator('.blog')
+        await expect(blogsAfterLikes.nth(0).getByText('Blog3 Author3')).toBeVisible()
+        await expect(blogsAfterLikes.nth(1).getByText('Blog2 Author2')).toBeVisible()
+        await expect(blogsAfterLikes.nth(2).getByText('Blog1 Author1')).toBeVisible()
+      })
+    })
   })
 })
