@@ -22,9 +22,7 @@ const AnecdoteForm = () => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
-    if (content.length > 4) {
-      newAnecdoteMutation.mutate(content)
-    }
+    newAnecdoteMutation.mutate(content)
   }
 
   return (
