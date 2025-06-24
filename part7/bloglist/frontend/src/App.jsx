@@ -5,16 +5,14 @@ import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { useNotificationDispatch } from './NotificationContext'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState({
-    message: null,
-    isError: false,
-  })
+  const setNotification = useNotificationDispatch()
 
   const blogFormRef = useRef()
 
@@ -40,24 +38,14 @@ const App = () => {
       .create(blogObject)
       .then((returnedBlog) => {
         setBlogs(blogs.concat(returnedBlog))
-        setNotification({
-          message: `A new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
-          isError: false,
-        })
-        setTimeout(
-          () => setNotification({ message: null, isError: false }),
-          5000,
+        setNotification(
+          `A new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
+          'success',
+          5,
         )
       })
       .catch((exception) => {
-        setNotification({
-          message: 'Error: ' + exception.response.data.error,
-          isError: true,
-        })
-        setTimeout(
-          () => setNotification({ message: null, isError: false }),
-          5000,
-        )
+        setNotification('Error: ' + exception.response.data.error, 'error', 5)
       })
   }
 
@@ -66,24 +54,14 @@ const App = () => {
       .update(id, blogObject)
       .then((returnedBlog) => {
         setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)))
-        setNotification({
-          message: `A blog ${returnedBlog.title} by ${returnedBlog.author} updated`,
-          isError: false,
-        })
-        setTimeout(
-          () => setNotification({ message: null, isError: false }),
-          5000,
+        setNotification(
+          `A blog ${returnedBlog.title} by ${returnedBlog.author} updated`,
+          'success',
+          5,
         )
       })
       .catch((exception) => {
-        setNotification({
-          message: 'Error: ' + exception.response.data.error,
-          isError: true,
-        })
-        setTimeout(
-          () => setNotification({ message: null, isError: false }),
-          5000,
-        )
+        setNotification('Error: ' + exception.response.data.error, 'error', 5)
       })
   }
 
@@ -92,24 +70,10 @@ const App = () => {
       .remove(id)
       .then(() => {
         setBlogs(blogs.filter((blog) => blog.id !== id))
-        setNotification({
-          message: 'Blog deleted',
-          isError: false,
-        })
-        setTimeout(
-          () => setNotification({ message: null, isError: false }),
-          5000,
-        )
+        setNotification('Blog deleted', 'success', 5)
       })
       .catch((exception) => {
-        setNotification({
-          message: 'Error: ' + exception.response.data.error,
-          isError: true,
-        })
-        setTimeout(
-          () => setNotification({ message: null, isError: false }),
-          5000,
-        )
+        setNotification('Error: ' + exception.response.data.error, 'error', 5)
       })
   }
 
@@ -133,11 +97,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setNotification({
-        message: exception.response.data.error,
-        isError: true,
-      })
-      setTimeout(() => setNotification({ message: null, isError: false }), 5000)
+      setNotification(exception.response.data.error, 'error', 5)
     }
   }
 
@@ -156,10 +116,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
-        <Notification
-          message={notification.message}
-          isError={notification.isError}
-        />
+        <Notification />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -190,10 +147,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification
-        message={notification.message}
-        isError={notification.isError}
-      />
+      <Notification />
       <p>
         {user.name} logged in <button onClick={handleLogout}>logout</button>
       </p>
