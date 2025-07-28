@@ -7,11 +7,14 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { useNotificationDispatch } from './NotificationContext'
+import { useUserValue, useUserDispatch } from './LoggedUserContext'
+import { use } from 'react'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+  const user = useUserValue()
+  const userDispatch = useUserDispatch()
   const setNotification = useNotificationDispatch()
 
   const blogFormRef = useRef()
@@ -20,9 +23,16 @@ const App = () => {
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+      try {
+        const user = JSON.parse(loggedUserJSON)
+        userDispatch({ type: 'LOGIN', payload: user })
+        blogService.setToken(user.token)
+      } catch (error) {
+        console.error('Error parsing logged user JSON:', error)
+        window.localStorage.removeItem('loggedBlogappUser')
+      }
+    } else {
+      console.log('No user logged in')
     }
   }, [])
 
@@ -108,7 +118,7 @@ const App = () => {
       })
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      setUser(user)
+      userDispatch({ type: 'LOGIN', payload: user })
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -119,7 +129,9 @@ const App = () => {
   const handleLogout = () => {
     try {
       window.localStorage.removeItem('loggedBlogappUser')
-      setUser(null)
+      blogService.setToken(null)
+      userDispatch({ type: 'LOGOUT' })
+      queryClient.removeQueries({ queryKey: ['blogs'] })
       setUsername('')
       setPassword('')
     } catch (exception) {
