@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
@@ -8,20 +9,13 @@ import loginService from './services/login'
 import { useNotificationDispatch } from './NotificationContext'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const setNotification = useNotificationDispatch()
 
   const blogFormRef = useRef()
-
-  useEffect(() => {
-    blogService.getAll().then((blogs) => {
-      blogs.sort((a, b) => b.likes - a.likes)
-      setBlogs(blogs)
-    })
-  }, [])
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -32,50 +26,71 @@ const App = () => {
     }
   }, [])
 
-  const addBlog = (blogObject) => {
+  const result = useQuery({
+    queryKey: ['blogs'],
+    queryFn: blogService.getAll,
+  })
+
+  const newBlogMutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: (newBlog) => {
+      const blogs = queryClient.getQueryData(['blogs']) || []
+      queryClient.setQueryData(['blogs'], blogs.concat(newBlog))
+      setNotification(
+        `A new blog ${newBlog.title} by ${newBlog.author} added`,
+        'success',
+        5,
+      )
+    },
+    onError: (error) => {
+      setNotification('Error: ' + error.response.data.error, 'error', 5)
+    },
+  })
+
+  const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    blogService
-      .create(blogObject)
-      .then((returnedBlog) => {
-        setBlogs(blogs.concat(returnedBlog))
-        setNotification(
-          `A new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
-          'success',
-          5,
-        )
-      })
-      .catch((exception) => {
-        setNotification('Error: ' + exception.response.data.error, 'error', 5)
-      })
+    newBlogMutation.mutate(blogObject)
   }
+
+  const updateBlogMutation = useMutation({
+    mutationFn: (blogObject) => blogService.update(blogObject.id, blogObject),
+    onSuccess: (updatedBlog) => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      queryClient.setQueryData(
+        ['blogs'],
+        blogs.map((blog) => (blog.id === updatedBlog.id ? updatedBlog : blog)),
+      )
+      setNotification(
+        `A blog ${updatedBlog.title} by ${updatedBlog.author} updated`,
+        'success',
+        5,
+      )
+    },
+    onError: (error) => {
+      setNotification('Error: ' + error.response.data.error, 'error', 5)
+    },
+  })
 
   const updateBlog = (id, blogObject) => {
-    blogService
-      .update(id, blogObject)
-      .then((returnedBlog) => {
-        setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)))
-        setNotification(
-          `A blog ${returnedBlog.title} by ${returnedBlog.author} updated`,
-          'success',
-          5,
-        )
-      })
-      .catch((exception) => {
-        setNotification('Error: ' + exception.response.data.error, 'error', 5)
-      })
+    updateBlogMutation.mutate({ ...blogObject, id })
   }
 
+  const deleteBlogMutation = useMutation({
+    mutationFn: (id) => blogService.remove(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
+      setNotification('Blog deleted', 'success', 5)
+    },
+    onError: (error) => {
+      setNotification('Error: ' + error.response.data.error, 'error', 5)
+    },
+  })
+
   const deleteBlog = (id) => {
-    blogService
-      .remove(id)
-      .then(() => {
-        setBlogs(blogs.filter((blog) => blog.id !== id))
-        setNotification('Blog deleted', 'success', 5)
-      })
-      .catch((exception) => {
-        setNotification('Error: ' + exception.response.data.error, 'error', 5)
-      })
+    deleteBlogMutation.mutate(id)
   }
+
+  const blogs = result.data?.sort((a, b) => b.likes - a.likes) || []
 
   const blogForm = () => (
     <Togglable buttonLabel="create new blog" ref={blogFormRef}>
