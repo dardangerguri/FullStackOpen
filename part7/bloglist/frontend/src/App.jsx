@@ -4,11 +4,12 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
+import Users from './components/Users'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { useNotificationDispatch } from './NotificationContext'
 import { useUserValue, useUserDispatch } from './LoggedUserContext'
-import { use } from 'react'
+import { Routes, Route } from 'react-router-dom'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -175,21 +176,33 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <Notification />
-      <p>
-        {user.name} logged in <button onClick={handleLogout}>logout</button>
-      </p>
-      {blogForm()}
-      {blogs
-        .sort((a, b) => b.likes - a.likes)
-        .map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            updateBlog={updateBlog}
-            user={user}
-            deleteBlog={deleteBlog}
-          />
-        ))}
+      <p>{user.name} logged in</p>
+      <div>
+        <button onClick={handleLogout}>logout</button>
+      </div>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              {blogForm()}
+              {blogs
+                .sort((a, b) => b.likes - a.likes)
+                .map((blog) => (
+                  <Blog
+                    key={blog.id}
+                    blog={blog}
+                    updateBlog={updateBlog}
+                    user={user}
+                    deleteBlog={deleteBlog}
+                  />
+                ))}
+            </>
+          }
+        />
+
+        <Route path="/users" element={<Users />} />
+      </Routes>
     </div>
   )
 }
