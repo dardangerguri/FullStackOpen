@@ -7,6 +7,7 @@ import Togglable from './components/Togglable'
 import Users from './components/Users'
 import User from './components/User'
 import BlogView from './components/BlogView'
+import Navigation from './components/Navigation'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { useNotificationDispatch } from './NotificationContext'
@@ -176,12 +177,9 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
+      <Navigation user={user} handleLogout={handleLogout} />
+      <h2>blog app</h2>
       <Notification />
-      <p>{user.name} logged in</p>
-      <div>
-        <button onClick={handleLogout}>logout</button>
-      </div>
       <Routes>
         <Route
           path="/"
