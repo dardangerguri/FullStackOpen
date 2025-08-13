@@ -6,6 +6,7 @@ import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import Users from './components/Users'
 import User from './components/User'
+import BlogView from './components/BlogView'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { useNotificationDispatch } from './NotificationContext'
@@ -190,13 +191,7 @@ const App = () => {
               {blogs
                 .sort((a, b) => b.likes - a.likes)
                 .map((blog) => (
-                  <Blog
-                    key={blog.id}
-                    blog={blog}
-                    updateBlog={updateBlog}
-                    user={user}
-                    deleteBlog={deleteBlog}
-                  />
+                  <Blog key={blog.id} blog={blog} />
                 ))}
             </>
           }
@@ -204,6 +199,16 @@ const App = () => {
 
         <Route path="/users" element={<Users />} />
         <Route path="/users/:id" element={<User />} />
+        <Route
+          path="/blogs/:id"
+          element={
+            <BlogView
+              updateBlog={updateBlog}
+              user={user}
+              deleteBlog={deleteBlog}
+            />
+          }
+        />
       </Routes>
     </div>
   )
