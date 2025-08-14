@@ -145,69 +145,95 @@ const App = () => {
 
   if (user === null) {
     return (
-      <div>
-        <h2>log in to application</h2>
-        <Notification />
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input
-              data-testid="username"
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
+      <div className="container">
+        <div className="row justify-content-center">
+          <div className="col-md-6 col-lg-4">
+            <div className="card mt-5">
+              <div className="card-header bg-light">
+                <h2 className="mb-0 text-success text-center">
+                  log in to application
+                </h2>
+              </div>
+              <div className="card-body">
+                <Notification />
+                <form onSubmit={handleLogin}>
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">username</label>
+                    <input
+                      data-testid="username"
+                      type="text"
+                      value={username}
+                      name="Username"
+                      className="form-control"
+                      onChange={({ target }) => setUsername(target.value)}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">password</label>
+                    <input
+                      data-testid="password"
+                      type="password"
+                      value={password}
+                      name="Password"
+                      className="form-control"
+                      onChange={({ target }) => setPassword(target.value)}
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-success w-100">
+                    login
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
-          <div>
-            password
-            <input
-              data-testid="password"
-              type="password"
-              value={password}
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button type="submit">login</button>
-        </form>
+        </div>
       </div>
     )
   }
 
   return (
-    <div>
+    <div className="container">
       <Navigation user={user} handleLogout={handleLogout} />
-      <h2>blog app</h2>
-      <Notification />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              {blogForm()}
-              {blogs
-                .sort((a, b) => b.likes - a.likes)
-                .map((blog) => (
-                  <Blog key={blog.id} blog={blog} />
-                ))}
-            </>
-          }
-        />
-
-        <Route path="/users" element={<Users />} />
-        <Route path="/users/:id" element={<User />} />
-        <Route
-          path="/blogs/:id"
-          element={
-            <BlogView
-              updateBlog={updateBlog}
-              user={user}
-              deleteBlog={deleteBlog}
+      <div className="card">
+        <div className="card-header bg-light">
+          <h2 className="mb-0 text-success text-center">blog app</h2>
+        </div>
+        <div className="card-body">
+          <Notification />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  {blogForm()}
+                  <div className="row">
+                    {blogs
+                      .sort((a, b) => b.likes - a.likes)
+                      .map((blog) => (
+                        <div key={blog.id} className="col-12">
+                          <Blog blog={blog} />
+                        </div>
+                      ))}
+                  </div>
+                </>
+              }
             />
-          }
-        />
-      </Routes>
+
+            <Route path="/users" element={<Users />} />
+            <Route path="/users/:id" element={<User />} />
+            <Route
+              path="/blogs/:id"
+              element={
+                <BlogView
+                  updateBlog={updateBlog}
+                  user={user}
+                  deleteBlog={deleteBlog}
+                />
+              }
+            />
+          </Routes>
+        </div>
+      </div>
     </div>
   )
 }

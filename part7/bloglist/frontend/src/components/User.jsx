@@ -15,28 +15,55 @@ const User = () => {
   })
 
   if (isLoading) {
-    return <div>Loading user...</div>
+    return (
+      <div className="text-center">
+        <div className="spinner-border text-success" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+        <p className="mt-2">Loading user...</p>
+      </div>
+    )
   }
 
   if (error) {
-    return <div>Error loading user: {error.message}</div>
+    return (
+      <div className="alert alert-danger" role="alert">
+        Error loading user: {error.message}
+      </div>
+    )
   }
 
   const user = users?.find((u) => u.id === userId)
 
   if (!user) {
-    return <div>User not found</div>
+    return (
+      <div className="alert alert-warning" role="alert">
+        User not found
+      </div>
+    )
   }
 
   return (
     <div>
-      <h2>{user.name}</h2>
-      <h3>added blogs</h3>
-      <ul>
-        {user.blogs.map((blog) => (
-          <li key={blog.id}>{blog.title}</li>
-        ))}
-      </ul>
+      <div className="card border-success mb-4">
+        <div className="card-header bg-success text-white">
+          <h2 className="mb-0">{user.name}</h2>
+        </div>
+        <div className="card-body">
+          <h3 className="text-success mb-3">Added blogs</h3>
+          {user.blogs.length === 0 ? (
+            <p className="text-muted">No blogs added yet.</p>
+          ) : (
+            <ul className="list-group list-group-flush">
+              {user.blogs.map((blog) => (
+                <li key={blog.id} className="list-group-item border-success">
+                  {blog.title}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

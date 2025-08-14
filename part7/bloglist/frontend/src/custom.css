@@ -1,0 +1,19 @@
+.hover-shadow:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+}
+
+.card {
+  transition: all 0.2s ease;
+  border: 1px solid #dee2e6;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(25, 135, 84, 0.05) !important;
+}
+
+.list-group-item:hover {
+  background-color: rgba(25, 135, 84, 0.02);
+  transition: background-color 0.2s ease;
+}

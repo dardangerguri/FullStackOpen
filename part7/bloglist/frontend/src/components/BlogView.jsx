@@ -33,17 +33,32 @@ const BlogView = ({ updateBlog, user, deleteBlog }) => {
   })
 
   if (isLoading) {
-    return <div>Loading blog...</div>
+    return (
+      <div className="text-center">
+        <div className="spinner-border text-success" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+        <p className="mt-2">Loading blog...</p>
+      </div>
+    )
   }
 
   if (error) {
-    return <div>Error loading blog: {error.message}</div>
+    return (
+      <div className="alert alert-danger" role="alert">
+        Error loading blog: {error.message}
+      </div>
+    )
   }
 
   const blog = blogs.find((b) => b.id === blogId)
 
   if (!blog) {
-    return <div>Blog not found</div>
+    return (
+      <div className="alert alert-warning" role="alert">
+        Blog not found
+      </div>
+    )
   }
 
   const handleLike = () => {
@@ -74,41 +89,68 @@ const BlogView = ({ updateBlog, user, deleteBlog }) => {
   }
 
   return (
-    <div>
-      <h2>
-        {blog.title} {blog.author}
-      </h2>
-      <div>
-        <a href={blog.url} target="_blank" rel="noopener noreferrer">
-          {blog.url}
-        </a>
+    <div className="card border-success">
+      <div className="card-header bg-success text-white">
+        <h2 className="mb-0">
+          {blog.title} by {blog.author}
+        </h2>
       </div>
-      <div>
-        {blog.likes} likes
-        <button onClick={handleLike}>like</button>
-      </div>
-      <div>
-        added by {blog.user.name}
-        {user.username === blog.user.username && (
-          <button onClick={handleDelete}>remove</button>
-        )}
-      </div>
-      <div>
-        <h3>comments</h3>
-        <form onSubmit={handleAddComment}>
-          <input
-            type="text"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="Add a comment"
-          />
-          <button type="submit">add comment</button>
-        </form>
-        <ul>
-          {blog.comments.map((comment, index) => (
-            <li key={index}>{comment}</li>
-          ))}
-        </ul>
+      <div className="card-body">
+        <div className="mb-3">
+          <a
+            href={blog.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-success text-decoration-none"
+          >
+            {blog.url}
+          </a>
+        </div>
+        <div className="mb-3">
+          <span className="me-3">{blog.likes} likes</span>
+          <button onClick={handleLike} className="btn btn-success">
+            like
+          </button>
+        </div>
+        <div className="mb-4">
+          <span className="me-3">added by {blog.user.name}</span>
+          {user.username === blog.user.username && (
+            <button onClick={handleDelete} className="btn btn-danger">
+              remove
+            </button>
+          )}
+        </div>
+
+        <hr className="my-4" />
+
+        <div>
+          <h3 className="text-success mb-3">Comments</h3>
+          <form onSubmit={handleAddComment} className="mb-3">
+            <div className="input-group">
+              <input
+                type="text"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Add a comment"
+                className="form-control"
+              />
+              <button type="submit" className="btn btn-success">
+                add comment
+              </button>
+            </div>
+          </form>
+          {blog.comments && blog.comments.length > 0 ? (
+            <ul className="list-group">
+              {blog.comments.map((comment, index) => (
+                <li key={index} className="list-group-item">
+                  {comment}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-muted">No comments yet.</p>
+          )}
+        </div>
       </div>
     </div>
   )

@@ -2,19 +2,17 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
 const Blog = ({ blog }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
-
   return (
-    <div style={blogStyle} className="blog">
-      <Link to={`/blogs/${blog.id}`}>
-        {blog.title} {blog.author}
-      </Link>
+    <div className="card mb-3 hover-shadow">
+      <div className="card-body">
+        <Link
+          to={`/blogs/${blog.id}`}
+          className="card-title text-decoration-none text-success fw-bold fs-5"
+        >
+          {blog.title}
+        </Link>
+        <p className="card-text text-muted mt-2">by {blog.author}</p>
+      </div>
     </div>
   )
 }

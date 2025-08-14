@@ -5,17 +5,20 @@ const Notification = () => {
 
   if (notification === null) return null
 
-  const style = {
-    color: notification.type === 'error' ? 'red' : 'green',
-    background: 'lightgrey',
-    fontSize: '20px',
-    borderStyle: 'solid',
-    borderRadius: '5px',
-    padding: '10px',
-    marginBottom: '10px',
-  }
+  const alertClass =
+    notification.type === 'error' ? 'alert alert-danger' : 'alert alert-success'
 
-  return <div style={style}>{notification.message}</div>
+  return (
+    <div className={`${alertClass} alert-dismissible fade show`} role="alert">
+      {notification.message}
+      <button
+        type="button"
+        className="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+  )
 }
 
 export default Notification

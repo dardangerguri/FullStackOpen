@@ -14,38 +14,51 @@ const Users = () => {
   })
 
   if (isLoading) {
-    return <div>Loading users...</div>
+    return (
+      <div className="text-center">
+        <div className="spinner-border text-success" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+        <p className="mt-2">Loading users...</p>
+      </div>
+    )
   }
 
   if (error) {
-    return <div>Error loading users: {error.message}</div>
+    return (
+      <div className="alert alert-danger" role="alert">
+        Error loading users: {error.message}
+      </div>
+    )
   }
 
   if (!Array.isArray(users) || users.length === 0) {
-    return <div>No users found</div>
+    return (
+      <div className="alert alert-info" role="alert">
+        No users found
+      </div>
+    )
   }
 
   return (
     <div>
-      <h2>Users</h2>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>blogs created</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>
-                <Link to={`/users/${user.id}`}>{user.name}</Link>
-              </td>
-              <td>{user.blogs.length}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h2 className="text-success mb-4">Users</h2>
+      {users.map((user) => (
+        <div key={user.id} className="card mb-3 hover-shadow">
+          <div className="card-body">
+            <Link
+              to={`/users/${user.id}`}
+              className="card-title text-decoration-none text-success fw-bold fs-5"
+            >
+              {user.name}
+            </Link>
+            <p className="card-text text-muted mt-2 mb-0">
+              {user.blogs.length} blog{user.blogs.length !== 1 ? 's' : ''}{' '}
+              created
+            </p>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

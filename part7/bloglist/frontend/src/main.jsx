@@ -2,6 +2,8 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter as Router } from 'react-router-dom'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import './custom.css'
 
 import { NotificationContextProvider } from './NotificationContext'
 import { LoggedUserContextProvider } from './LoggedUserContext'
