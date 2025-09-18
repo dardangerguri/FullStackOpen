@@ -32,7 +32,7 @@ const Authors = (props) => {
     console.log('update author...')
 
     const bornInt = Number(born)
-    if (isNaN(bornInt)) {
+    if (isNaN(bornInt) || born.trim() === '') {
       console.log('Born year must be a number')
       return
     }
@@ -71,7 +71,24 @@ const Authors = (props) => {
       <h3>Set birthyear</h3>
       <form onSubmit={submit}>
         <div>
-          name <input value={name} onChange={({ target }) => setName(target.value)} />
+          <select
+            value={name}
+            onChange={({ target }) => setName(target.value)}
+            required style={{
+              width: "100%",
+              display: "inline-block",
+              marginRight: "10px",
+              padding: "6px 10px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              backgroundColor: "white",
+              fontSize: "14px",
+            }}>
+          <option value="" disabled> choose author </option>
+            {authors.map((a) => (
+              <option key={a.name} value={a.name}>{a.name}</option>
+            ))}
+          </select>
         </div>
         <div>
           born <input value={born} onChange={({ target }) => setBorn(target.value)} />
