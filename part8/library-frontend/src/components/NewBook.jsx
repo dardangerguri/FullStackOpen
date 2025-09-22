@@ -13,6 +13,10 @@ const NewBook = (props) => {
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
     onError: (error) => {
       console.log(error.graphQLErrors[0].message)
+      props.notify('Error creating book: ' + error.graphQLErrors[0].message, true)
+    },
+    onCompleted: () => {
+      props.notify(`Book "${title}" created`, false)
     }
   })
 

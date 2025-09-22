@@ -34,16 +34,27 @@ const Authors = (props) => {
     const bornInt = Number(born)
     if (isNaN(bornInt) || born.trim() === '') {
       console.log('Born year must be a number')
+      props.notify('Born year must be a number', true)
       return
     }
 
     const currentYear = new Date().getFullYear()
     if (bornInt < 0 || bornInt > currentYear) {
       console.log(`Born year must be between 0 and ${currentYear}`)
+      props.notify(`Born year must be between 0 and ${currentYear}`, true)
       return
     }
 
-    editBirthyear({ variables: { name, setBornTo: bornInt } })
+    editBirthyear({
+      variables: { name, setBornTo: bornInt },
+      onError: (error) => {
+        console.log(error.graphQLErrors[0].message)
+        props.notify('Error updating author: ' + error.graphQLErrors[0].message, true)
+      },
+      onCompleted: () => {
+        props.notify(`Author "${name}" updated`, false)
+      }
+    })
 
     setName('')
     setBorn('')
@@ -68,33 +79,39 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <h3>Set birthyear</h3>
-      <form onSubmit={submit}>
-        <div>
-          <select
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-            required style={{
-              width: "100%",
-              display: "inline-block",
-              marginRight: "10px",
-              padding: "6px 10px",
-              borderRadius: "6px",
-              border: "1px solid #ccc",
-              backgroundColor: "white",
-              fontSize: "14px",
-            }}>
-          <option value="" disabled> choose author </option>
-            {authors.map((a) => (
-              <option key={a.name} value={a.name}>{a.name}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          born <input value={born} onChange={({ target }) => setBorn(target.value)} />
-        </div>
-        <button type='submit'>update author</button>
-      </form>
+      {props.token && (
+        <>
+          <h3>Set birthyear</h3>
+            <form onSubmit={submit}>
+              <div>
+                <select
+                  value={name}
+                  onChange={({ target }) => setName(target.value)}
+                  required
+                  style={{
+                    width: "100%",
+                    display: "inline-block",
+                    marginRight: "10px",
+                    padding: "6px 10px",
+                    borderRadius: "6px",
+                    border: "1px solid #ccc",
+                    backgroundColor: "white",
+                    fontSize: "14px",
+                  }}
+                >
+                  <option value="" disabled> choose author </option>
+                    {authors.map((a) => (
+                      <option key={a.name} value={a.name}>{a.name}</option>
+                    ))}
+                </select>
+              </div>
+              <div>
+                born <input value={born} onChange={({ target }) => setBorn(target.value)} />
+              </div>
+              <button type='submit'>update author</button>
+            </form>
+        </>
+      )}
     </div>
   )
 }
