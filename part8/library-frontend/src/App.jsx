@@ -20,15 +20,40 @@ const App = () => {
 
   const client = useApolloClient();
 
+  const updateCacheWith = (addedBook) => {
+    const uniqByTitle = (a) => {
+      let seen = new Set();
+      return a.filter((item) => {
+        if (seen.has(item.title)) {
+          return false;
+        }
+        seen.add(item.title);
+        return true;
+      });
+    };
+
+    client.cache.updateQuery({ query: ALL_BOOKS , variables: { genre: null } }, (cachedData) => {
+      if (!cachedData || !cachedData.allBooks) {
+        return { allBooks: [addedBook] };
+      }
+      return { allBooks: uniqByTitle(cachedData.allBooks.concat(addedBook)) };
+    });
+
+    addedBook.genres.forEach((genre) => {
+      client.cache.updateQuery({ query: ALL_BOOKS, variables: { genre } }, (cachedData) => {
+        if (!cachedData || !cachedData.allBooks) {
+          return { allBooks: [addedBook] };
+        }
+        return { allBooks: uniqByTitle(cachedData.allBooks.concat(addedBook)) };
+      });
+    });
+  };
+
   useSubscription(BOOK_ADDED, {
-    onData: ({ data, client }) => {
+    onData: ({ data }) => {
       const addedBook = data.data.bookAdded;
       alert(`New book added: ${addedBook.title} by ${addedBook.author.name}`);
-      client.cache.updateQuery({ query: ALL_BOOKS }, (existing) => {
-        if (!existing)
-          return { allBooks: [addedBook] };
-        return { allBooks: existing.allBooks.concat(addedBook) };
-      });
+      updateCacheWith(addedBook);
     }
   });
 
