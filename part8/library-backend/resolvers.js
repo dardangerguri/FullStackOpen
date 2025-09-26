@@ -36,21 +36,24 @@ const resolvers = {
     },
 
     allAuthors: async () => {
-      return await Author.find({})
+      const authors = await Author.find({})
+
+      const counts = await Book.aggregate([
+        { $group: { _id: "$author", bookCount: { $sum: 1 } } }
+      ])
+
+      const countsMap = {}
+      counts.forEach(c => {
+        countsMap[c._id.toString()] = c.bookCount
+      })
+
+      return authors.map(author => ({
+        ...author.toObject(),
+        bookCount: countsMap[author._id.toString()] || 0
+      }))
     },
     me: (root, args, context) => {
       return context.currentUser
-    }
-  },
-
-  Author: {
-    bookCount: async (root) => {
-      const author = await Author.findOne({ name: root.name })
-      if (!author) {
-        return 0
-      }
-      const ownBooks = await Book.find({ author: author._id })
-      return ownBooks.length
     }
   },
 
