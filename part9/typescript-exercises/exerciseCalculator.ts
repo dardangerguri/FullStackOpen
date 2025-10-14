@@ -10,7 +10,7 @@ interface Result {
   average: number;
 }
 
-const calculateExercises = (dailyExercises: number[], target: number): Result => {
+export const calculateExercises = (dailyExercises: number[], target: number): Result => {
   const periodLength = dailyExercises.length;
   const trainingDays = dailyExercises.filter(day => day > 0).length;
   const totalHours = dailyExercises.reduce((sum, hours) => sum + hours, 0);
@@ -44,11 +44,11 @@ const calculateExercises = (dailyExercises: number[], target: number): Result =>
   };
 };
 
-try {
-  const { target, dailyExercises } = parseExerciseArgs(process.argv);
-  console.log(calculateExercises(dailyExercises, target));
-} catch (error: unknown) {
-  logError(error);
+if (require.main === module) {
+  try {
+    const { target, dailyExercises } = parseExerciseArgs(process.argv);
+    console.log(calculateExercises(dailyExercises, target));
+  } catch (error: unknown) {
+    logError(error);
+  }
 }
-
-export { calculateExercises };
