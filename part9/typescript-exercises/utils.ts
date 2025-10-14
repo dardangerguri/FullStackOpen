@@ -1,6 +1,6 @@
-export const isNotNumber = (value: any): boolean => {
+export const isNotNumber = (value: string | number): boolean => {
   return isNaN(Number(value));
-}
+};
 
 export const parseBmiArgs = (args: string[]): { height: number, weight: number } => {
   if (args.length < 4) throw new Error('Not enough arguments');
@@ -14,7 +14,7 @@ export const parseBmiArgs = (args: string[]): { height: number, weight: number }
   }
 
   return { height, weight };
-}
+};
 
 export const parseExerciseArgs = (args: string[]): { target: number, dailyExercises: number[] } => {
   if (args.length < 4) throw new Error('Not enough arguments');
@@ -27,7 +27,7 @@ export const parseExerciseArgs = (args: string[]): { target: number, dailyExerci
   }
 
   return { target, dailyExercises };
-}
+};
 
 export const logError = (error: unknown): void => {
   let errorMessage = 'Something bad happened.';
@@ -36,4 +36,4 @@ export const logError = (error: unknown): void => {
   }
   console.error(errorMessage);
   return;
-}
+};
