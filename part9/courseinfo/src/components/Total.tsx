@@ -1,9 +1,9 @@
 interface TotalProps {
   totalExercises: number;
-};
+}
 
-const Total = (props: TotalProps) => {
-  return <p>Number of exercises {props.totalExercises}</p>;
-};
+const Total = ({ totalExercises }: TotalProps) => (
+  <p>Number of exercises {totalExercises}</p>
+);
 
 export default Total;

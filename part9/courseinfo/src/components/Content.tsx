@@ -1,19 +1,15 @@
-interface CoursePart {
-  name: string;
-  exerciseCount: number;
-}
+import type { CoursePart } from "../types";
+import Part from "./Part";
 
-interface CourseContentProps {
+interface ContentProps {
   courseParts: CoursePart[];
 }
 
-const Content = (props: CourseContentProps) => {
+const Content = ({ courseParts }: ContentProps) => {
   return (
     <div>
-      {props.courseParts.map((course: CoursePart) => (
-        <p key={course.name}>
-          {course.name} {course.exerciseCount}
-        </p>
+      {courseParts.map((part) => (
+        <Part key={part.name} part={part} />
       ))}
     </div>
   );
