@@ -7,6 +7,7 @@ export const NewPatientEntrySchema = z.object({
   ssn: z.string().min(1, { message: "SSN is required" }),
   gender: z.nativeEnum(Gender, { message: "Invalid gender" }),
   occupation: z.string().min(1, { message: "Occupation is required" }),
+  entries: z.array(z.object({})).default([])
 }).strict();
 
 export const toNewPatientEntry = (object: unknown): NewPatientEntry => {

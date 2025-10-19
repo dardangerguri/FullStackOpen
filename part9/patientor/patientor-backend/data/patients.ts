@@ -1,43 +1,50 @@
-const data = [
+import { Patient, Gender } from '../src/types';
+
+const data: Patient[] = [
     {
         "id": "d2773336-f723-11e9-8f0b-362b9e155667",
         "name": "John McClane",
-        "dateOfBirth": "1986-07-09",
         "ssn": "090786-122X",
-        "gender": "male",
-        "occupation": "New york city cop"
+        "occupation": "New york city cop",
+        "gender": Gender.Male,
+        "dateOfBirth": "1986-07-09",
+        "entries": []
     },
     {
         "id": "d2773598-f723-11e9-8f0b-362b9e155667",
         "name": "Martin Riggs",
-        "dateOfBirth": "1979-01-30",
         "ssn": "300179-77A",
-        "gender": "male",
-        "occupation": "Cop"
+        "occupation": "Cop",
+        "gender": Gender.Male,
+        "dateOfBirth": "1979-01-30",
+        "entries": []
     },
     {
         "id": "d27736ec-f723-11e9-8f0b-362b9e155667",
         "name": "Hans Gruber",
-        "dateOfBirth": "1970-04-25",
         "ssn": "250470-555L",
-        "gender": "other",
-        "occupation": "Technician"
+        "occupation": "Technician",
+        "gender": Gender.Other,
+        "dateOfBirth": "1970-04-25",
+        "entries": []
     },
     {
         "id": "d2773822-f723-11e9-8f0b-362b9e155667",
         "name": "Dana Scully",
-        "dateOfBirth": "1974-01-05",
         "ssn": "050174-432N",
-        "gender": "female",
-        "occupation": "Forensic Pathologist"
+        "occupation": "Forensic Pathologist",
+        "gender": Gender.Female,
+        "dateOfBirth": "1974-01-05",
+        "entries": []
     },
     {
         "id": "d2773c6e-f723-11e9-8f0b-362b9e155667",
         "name": "Matti Luukkainen",
-        "dateOfBirth": "1971-04-09",
         "ssn": "090471-8890",
-        "gender": "male",
-        "occupation": "Digital evangelist"
+        "occupation": "Digital evangelist",
+        "gender": Gender.Male,
+        "dateOfBirth": "1971-04-09",
+        "entries": []
     }
 ];
 
