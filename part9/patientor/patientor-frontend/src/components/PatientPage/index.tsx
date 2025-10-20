@@ -2,10 +2,14 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Male, Female, Transgender } from "@mui/icons-material";
 
-import { Patient } from "../../types";
+import { Patient, Diagnosis } from "../../types";
 import patientService from "../../services/patients";
 
-const PatientPage = () => {
+interface Props {
+  diagnoses: Diagnosis[];
+}
+
+const PatientPage = ({ diagnoses }: Props) => {
   const [patient, setPatient] = useState<Patient | null>(null);
   const { id } = useParams<{ id: string }>();
 
@@ -34,8 +38,8 @@ const PatientPage = () => {
   return (
     <div>
       <h2>{patient.name} {genderIcon}</h2>
-      <p>ssn: {patient.ssn}</p>
-      <p>occupation: {patient.occupation}</p>
+      ssn: {patient.ssn} <br />
+      occupation: {patient.occupation}
 
       <h3>entries</h3>
       {(patient.entries || []).map((entry) => (
@@ -44,10 +48,15 @@ const PatientPage = () => {
         >
           <p>{entry.date} {entry.description}</p>
           {entry.diagnosisCodes && entry.diagnosisCodes.length > 0 && (
-              <ul>
-              {entry.diagnosisCodes.map((code) => (
-                  <li key={code}>{code}</li>
-                 ))}
+            <ul>
+              {entry.diagnosisCodes.map((code) => {
+                const diagnosis = diagnoses.find(d => d.code === code);
+                return (
+                  <li key={code}>
+                    {code} {diagnosis ? `: ${diagnosis.name}` : ""}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>
