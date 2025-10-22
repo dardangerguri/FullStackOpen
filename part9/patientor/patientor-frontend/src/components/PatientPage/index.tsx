@@ -80,6 +80,7 @@ const PatientPage = ({ diagnoses }: Props) => {
       {showAddForm && (
         <AddEntryForm
           patientId={patient.id}
+          diagnoses={diagnoses}
           onEntryAdded={handleEntryAdded}
           onError={handleEntryError}
           onCancel={handleCancel}
