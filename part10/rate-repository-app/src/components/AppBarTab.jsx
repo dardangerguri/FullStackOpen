@@ -1,10 +1,13 @@
 import { Pressable } from 'react-native';
+import { Link } from 'react-router-native';
 import Text from './Text';
 
-const AppBarTab = ({ children }) => {
+const AppBarTab = ({ route, children }) => {
   return (
-    <Pressable>
-      <Text color='header' fontWeight="bold" fontSize="heading">{children}</Text>
+    <Pressable style={{ paddingHorizontal: 10 }}>
+      <Link to={route}>
+        <Text color='header' fontWeight="bold" fontSize="heading">{children}</Text>
+      </Link>
     </Pressable>
   );
 };
