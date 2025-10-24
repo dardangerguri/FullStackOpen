@@ -1,16 +1,18 @@
-import { View } from 'react-native';
-import Text from './Text';
+import { View, StyleSheet } from 'react-native';
+import RepositoryItemHeader from './RepositoryItemHeader';
+import RepositoryStats from './RepositoryStats';
+
+const styles = StyleSheet.create({
+  RepositoryItem: {
+    backgroundColor: 'white',
+  },
+});
 
 const RepositoryItem = ({ repo }) => {
   return (
-    <View>
-      <Text>Full name: {repo.fullName}</Text>
-      <Text>Description: {repo.description}</Text>
-      <Text>Language: {repo.language}</Text>
-      <Text>Stars: {repo.stargazersCount}</Text>
-      <Text>Forks: {repo.forksCount}</Text>
-      <Text>Reviews: {repo.reviewCount}</Text>
-      <Text>Rating: {repo.ratingAverage}</Text>
+    <View style={styles.RepositoryItem}>
+      <RepositoryItemHeader repo={repo} />
+      <RepositoryStats repo={repo} />
     </View>
   );
 };
