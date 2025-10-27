@@ -1,6 +1,6 @@
 import { View, StyleSheet } from 'react-native';
-import RepositoryItemHeader from './RepositoryItemHeader';
-import RepositoryStats from './RepositoryStats';
+import RepositoryItemHeader from './RepositoryItemHeader/RepositoryItemHeader';
+import RepositoryStats from './RepositoryStats/RepositoryStats';
 
 const styles = StyleSheet.create({
   RepositoryItem: {
