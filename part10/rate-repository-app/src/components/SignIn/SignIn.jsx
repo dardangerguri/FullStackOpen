@@ -4,6 +4,7 @@ import * as yup from 'yup';
 import useSignIn from '../../hooks/useSignIn';
 import Text from '../ui/Text';
 import theme from '../../theme';
+import AuthStorage from '../../utils/authStorage';
 
 const styles = StyleSheet.create({
   container: {
@@ -52,10 +53,16 @@ const SignIn = () => {
 
   const onSubmit = async (values, { resetForm }) => {
     const { username, password } = values;
+    const authStorage = new AuthStorage();
 
     try {
-      const result = await signIn({ username, password });
-      console.log('Sign in result:', result);
+      const { data } = await signIn({ username, password });
+      console.log('Sign in result:', data);
+
+      if (data?.authenticate?.accessToken) {
+        await authStorage.setAccessToken(data.authenticate.accessToken);
+        console.log('Access token saved!');
+      }
       resetForm();
     } catch (error) {
       console.log('Sign in error:', error);
