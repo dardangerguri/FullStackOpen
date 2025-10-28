@@ -2,7 +2,15 @@ import { Pressable } from 'react-native';
 import { Link } from 'react-router-native';
 import Text from '../ui/Text';
 
-const AppBarTab = ({ route, children }) => {
+const AppBarTab = ({ route, children, onPress }) => {
+  if (onPress) {
+    return (
+      <Pressable style={{ paddingHorizontal: 10 }} onPress={onPress}>
+        <Text color='header' fontWeight="bold" fontSize="heading">{children}</Text>
+      </Pressable>
+    );
+  }
+
   return (
     <Pressable style={{ paddingHorizontal: 10 }}>
       <Link to={route}>
