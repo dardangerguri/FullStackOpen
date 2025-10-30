@@ -41,6 +41,7 @@ const AppBar = () => {
         <AppBarTab route={'/'}>Repositories</AppBarTab>
         {me ? (
           <>
+            <AppBarTab route={'/myreviews'}>My reviews</AppBarTab>
             <AppBarTab route={'/createreview'}>Create a review</AppBarTab>
             <AppBarTab onPress={handleSignOut}>Sign Out</AppBarTab>
           </>
