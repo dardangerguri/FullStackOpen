@@ -1,19 +1,8 @@
-import { FlatList, View, StyleSheet, Pressable, Alert } from 'react-native';
-import { useNavigate } from 'react-router-native';
-import useUserReviews from '../../hooks/useUserReviews';
-import useDeleteReview from '../../hooks/useDeleteReview';
-import Text from '../ui/Text';
+import { View, StyleSheet, Pressable } from 'react-native';
+import Text from '../../ui/Text';
 import theme from '../../theme';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.mainBackground,
-  },
-  separator: {
-    height: 10,
-    backgroundColor: theme.colors.mainBackground,
-  },
   reviewCard: {
     backgroundColor: 'white',
     marginBottom: 10,
@@ -80,15 +69,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyList: {
-    padding: 20,
-    alignItems: 'center',
-  },
 });
 
 const ReviewItem = ({ review, onViewRepository, onDelete }) => {
@@ -132,76 +112,4 @@ const ReviewItem = ({ review, onViewRepository, onDelete }) => {
   );
 };
 
-const ItemSeparator = () => <View style={styles.separator} />;
-
-const UserReviews = () => {
-  const { reviews, loading, error, refetch } = useUserReviews();
-  const [deleteReview] = useDeleteReview();
-  const navigate = useNavigate();
-
-  const handleViewRepository = (repositoryId) => {
-    navigate(`/repository/${repositoryId}`);
-  };
-
-  const handleDeletePress = (id) => {
-    Alert.alert(
-      "Delete review",
-      "Are you sure you want to delete this review?",
-      [
-        { text: "CANCEL", style: "cancel" },
-        {
-          text: "DELETE",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await deleteReview(id);
-              refetch();
-            } catch (e) {
-              console.log('Error deleting review:', e);
-            }
-          },
-        },
-      ]
-    );
-  };
-
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text>Loading reviews...</Text>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text>Error loading reviews: {error.message}</Text>
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.container}>
-      <FlatList
-        data={reviews}
-        renderItem={({ item }) => (
-          <ReviewItem
-            review={item}
-            onViewRepository={handleViewRepository}
-            onDelete={handleDeletePress}
-          />
-        )}
-        keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={ItemSeparator}
-        ListEmptyComponent={
-          <View style={styles.emptyList}>
-            <Text>No reviews yet.</Text>
-          </View>
-        }
-      />
-    </View>
-  );
-};
-
-export default UserReviews;
+export default ReviewItem;
