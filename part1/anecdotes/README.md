@@ -1,8 +1,29 @@
-# React + Vite
+# Anecdotes
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The Anecdotes application is a simple React app that displays a random anecdote each time the user clicks the "next anecdote" button. Users can also vote for their favorite anecdotes, and the app will display the anecdote with the most votes.
 
-Currently, two official plugins are available:
+<img src="https://github.com/dardangerguri/FullStackOpen/blob/main/project-media/Part1-Anecdote.gif" alt="Anecdote" width="1000" height="500"/>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🧠 How It Works
+
+The application uses React's `useState` hook to manage:
+- The currently displayed anecdote,
+- Vote counts for each anecdote.
+
+**Core functionality:**
+- Move to the next anecdote when the "next anecdote" button is clicked,
+- Increment votes for the selected anecdote,
+- Display the anecdote with the highest number of votes.
+
+State updates trigger re-renders, keeping the UI in sync with user actions.
+
+## ⚙️ Run
+
+To run the project:
+
+``` bash
+	npm install
+	npm run dev
+```
+
+---
